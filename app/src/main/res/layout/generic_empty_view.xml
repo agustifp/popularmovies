@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/genericEmptyViewIv"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        tools:src="@drawable/ic_empty_view_black"/>
+
+    <TextView
+        android:id="@+id/genericEmptyViewTitleTv"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        tools:text="Repositories" />
+
+    <TextView
+        android:id="@+id/genericEmptyViewTextTv"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:alpha="0.7"
+        android:gravity="center"
+        tools:text="Here will appear your public repositories" />
+</LinearLayout>

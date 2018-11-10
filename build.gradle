@@ -1,0 +1,76 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.3.0'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "io.realm:realm-gradle-plugin:5.4.1"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+
+    junitVersion = '4.12'
+    gsonVersion = '2.8.0'
+
+    rxJavaVersion = '2.1.3'
+    rxAndroidVersion = '2.0.1'
+    restmockVersion = '0.3.1'
+    okHttpVersion = '3.4.1'
+
+    //Google libs
+    androidXVersion = '1.0.0'
+    supportGoogleVersion = '28.0.0'
+    supportGooglePlayServicesVersion = '16.0.3'
+    lifecycle_version = '2.0.0'
+
+    fillableLoadersVersion = "1.03@aar"
+    timberVersion = '4.6.0'
+    //External libs
+    koinVersion = '1.0.1'
+    amazonAws = '2.6.+'
+    rxAndroid = '1.2.1'
+    rxJava = '1.2.2'
+    gson = '2.8.0'
+    retrofitVersion = '2.3.0'
+    okHttp = '2.3.0'
+    okhttpLoggingInterceptor = '3.6.0'
+    calligraphy = '2.1.0'
+    stickyheadersrecyclerview = '0.4.2'
+    glide = '4.8.0'
+    stetho = '1.2.0'
+    leakcanary = '1.4'
+    crashlytics = '2.9.5'
+    jetBrainsAnnotations = '15.0'
+    espresso = '2.2.2'
+    testRules = '0.5'
+    mockkVersion = '1.8.10.kotlin13'
+    coroutines = '1.0.0'
+    espressoCore ='3.0.2'
+    testRunner = '1.0.2'
+    retrofitKotlinAdapter = '0.9.2'
+    androidxConstrainLayout = '2.0.0-alpha2'
+    okhttp3LoggingInterceptor = '3.9.1'
+    restMockAndroid = '0.3.2'
+}

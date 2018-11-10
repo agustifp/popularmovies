@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="rating">Rating:</string>
+    <string name="error_title_no_movies">No movies</string>
+    <string name="error_description_no_movies">Oh no! we cannot find any movie</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Search a movie</string>
+    <string name="images_from_movies_content_description">Images from movies</string>
+</resources>
