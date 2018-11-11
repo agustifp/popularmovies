@@ -3,7 +3,7 @@ package android.afebrerp.com.movies.presentation.view.popularmovies
 import android.afebrerp.com.movies.presentation.entities.base.BaseListViewEntity
 
 interface PopularMoviesView {
-    fun setItems(moviesList: List<BaseListViewEntity>)
+    fun loadItems(moviesList: List<BaseListViewEntity>)
 
     fun showProgressBar(show: Boolean)
 

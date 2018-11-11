@@ -1,5 +1,6 @@
 package android.afebrerp.com.movies.presentation.view.popularmovies
 
+import android.afebrerp.com.movies.data.util.NetworkUtil
 import android.afebrerp.com.movies.presentation.view.base.BaseActivity
 import android.afebrerp.com.movies.presentation.view.base.BaseActivityFragmentInterface
 import android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies.PopularMoviesFragment
@@ -21,5 +22,11 @@ class MostPopularMoviesActivity : BaseActivity(), BaseActivityFragmentInterface 
     }
 
     override fun getToolbar(): Toolbar = findViewById(R.id.toolbar)
+
+    override fun isInternetReachable(): Boolean = NetworkUtil.isNetworkAvailable()
+
+    override fun showMessage(message: String) {
+        showSnackBar(message, coordinator_main)
+    }
 
 }

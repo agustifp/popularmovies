@@ -18,7 +18,7 @@ abstract class BaseUseCaseWrapper {
                 try {
                     map[useCaseIterator::class] = useCaseIterator as BaseUseCase<BaseEntity, BaseParams>
                 } catch (e: Exception) {
-                    print(TAG + "UseCase does not extend from BaseCoRoutineUseCase<BaseEntity, BaseParams>, please check Usecases used")
+                    print(TAG + "UseCase does not extend from BaseUseCase<BaseEntity, BaseParams>, please check Usecases used")
                 }
             }
 

@@ -1,4 +1,4 @@
-package com.futureworkshops.codetest.android.data.persistence.db
+package android.afebrerp.com.movies.data.persistence.db
 
 import android.content.Context
 import io.realm.Realm
@@ -21,7 +21,7 @@ object RealmManager : KoinComponent {
                 .build())
     }
 
-    fun <T> executeTransaction(fn: (Realm) -> T) =
+    fun <T> executeTransaction(fn: (Realm) -> T): T? =
             openRealmInstance { realm ->
                 var result: T? = null
                 realm.executeTransaction { result = fn(it) }

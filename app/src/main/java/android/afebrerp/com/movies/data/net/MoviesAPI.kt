@@ -13,4 +13,6 @@ interface MoviesAPI {
 
     @GET("movie/popular")
     fun getPopularMoviesList(@Query("page") page: Int): Deferred<MovieListDTO>
+
+
 }

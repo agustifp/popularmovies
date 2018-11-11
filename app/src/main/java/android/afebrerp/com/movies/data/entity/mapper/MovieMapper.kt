@@ -9,7 +9,7 @@ import android.afebrerp.com.movies.data.entity.realmentity.MovieRealmEntity
 import io.realm.RealmList
 
 
-object MovieListMapper {
+object MovieMapper {
 
     fun toDomainObject(movieListDTO: MovieListDTO?): MovieListEntity =
             if (movieListDTO != null) MovieListEntity(movieListDTO.page ?: 0,
@@ -59,4 +59,26 @@ object MovieListMapper {
                         movie.overview!!,
                         movie.releaseDate!!)
             } ?: listOf())
+
+    fun createMovieRealmEntityFromMovieEntity(movie: MovieEntity): MovieRealmEntity =
+            MovieRealmEntity().apply {
+                id = movie.id
+                video = movie.video
+                voteAverage = movie.voteAverage
+                title = movie.title
+                popularity = movie.popularity
+                posterPath = movie.posterPath
+                backdropPath = movie.backdropPath
+                adult = movie.adult
+                overview = movie.overview
+                releaseDate = movie.releaseDate
+                genreIds = RealmList<GenreRealmEntity>().apply {
+                    movie.genreIds.forEach { genreId ->
+                        GenreRealmEntity().apply {
+                            id = genreId
+                        }
+                    }
+                }
+            }
+
 }

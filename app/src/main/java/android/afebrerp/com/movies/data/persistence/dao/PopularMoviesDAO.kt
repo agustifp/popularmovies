@@ -1,38 +1,30 @@
-package com.futureworkshops.codetest.android.data.persistence.dao
-
-import com.futureworkshops.codetest.android.data.extensions.deleteEntity
-import com.futureworkshops.codetest.android.data.extensions.entityExists
-import com.futureworkshops.codetest.android.data.extensions.getAllEntities
-import com.futureworkshops.codetest.android.data.extensions.saveEntity
-import com.futureworkshops.codetest.android.data.model.dbmodel.BreedRealmEntity
-import com.futureworkshops.codetest.android.data.persistence.db.RealmManager
-import com.futureworkshops.codetest.android.domain.model.entity.BreedsListEntity
+package android.afebrerp.com.movies.data.persistence.dao
 
 
-class BreedDAO {
+import android.afebrerp.com.movies.data.entity.mapper.MovieMapper
+import android.afebrerp.com.movies.data.entity.realmentity.MovieRealmEntity
+import android.afebrerp.com.movies.data.persistence.db.RealmManager
+import android.afebrerp.com.movies.data.persistence.extensions.getAllEntities
+import android.afebrerp.com.movies.data.persistence.extensions.saveEntities
+import android.afebrerp.com.movies.domain.model.entity.MovieEntity
+import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 
-    fun addFavoriteBreed(bredEntity: BreedRealmEntity) {
-        RealmManager.executeTransaction { realm ->
-            realm.saveEntity(bredEntity)
-        }
-    }
 
-    fun getFavorites(block: (List<BreedRealmEntity>) -> BreedsListEntity): BreedsListEntity? =
-            RealmManager.executeTransaction { realm ->
-                realm.getAllEntities(BreedRealmEntity::class.java) {
+class PopularMoviesDAO(private val realmManager: RealmManager) {
+
+    fun getMostPopularList(block: (List<MovieRealmEntity>) -> MovieListEntity?): MovieListEntity? =
+            realmManager.executeTransaction { realm ->
+                realm.getAllEntities(MovieRealmEntity::class.java) {
                     block(it)
                 }
             }
 
-    fun removeFavorite(bredEntity: BreedRealmEntity) {
-        RealmManager.executeTransaction { realm ->
-            realm.deleteEntity(BreedRealmEntity::class.java, bredEntity.id!!.toInt())
-        }
-    }
-
-
-    fun existInDB(bredEntity: BreedRealmEntity): Boolean = RealmManager.executeTransaction { realm ->
-        realm.entityExists(BreedRealmEntity::class.java, BreedRealmEntity.ID, bredEntity.id!!.toInt())
-    } ?: false
+    fun setMostPopularList(moviesList: List<MovieEntity>) =
+            realmManager.executeTransaction { realm ->
+                realm.saveEntities(moviesList.asSequence()
+                        .map {
+                            MovieMapper.createMovieRealmEntityFromMovieEntity(it)
+                        }.toList())
+            }!!
 
 }

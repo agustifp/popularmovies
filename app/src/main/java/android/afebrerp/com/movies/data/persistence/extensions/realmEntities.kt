@@ -1,6 +1,5 @@
-package com.futureworkshops.codetest.android.data.extensions
+package android.afebrerp.com.movies.data.persistence.extensions
 
-import com.futureworkshops.codetest.android.data.model.dbmodel.BreedRealmEntity
 import io.realm.Realm
 import io.realm.RealmObject
 
@@ -23,4 +22,4 @@ fun <T : RealmObject> Realm.entityExists(entityType: Class<T>, idField: String, 
         getEntity(entityType, idField, id) != null
 
 fun <T : RealmObject> Realm.deleteEntity(entityType: Class<T>, id: Int) =
-        where(entityType).equalTo(BreedRealmEntity.ID, id).findFirst()?.deleteFromRealm()
+        where(entityType).equalTo("id", id).findFirst()?.deleteFromRealm()

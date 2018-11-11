@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.mostpopularmovies.MostPopularMoviesActivity">
+    tools:context="android.afebrerp.com.movies.presentation.view.popularmovies.MostPopularMoviesActivity">
 
 </android.support.constraint.ConstraintLayout>

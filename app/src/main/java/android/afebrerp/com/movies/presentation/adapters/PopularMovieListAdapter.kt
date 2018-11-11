@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afebrerp.movies.android.R
 
 
-class MostPopularMovieListAdapter(val movieList: List<BaseListViewEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PopularMovieListAdapter(var movieList: List<BaseListViewEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var lastPosition: Int = -1
 

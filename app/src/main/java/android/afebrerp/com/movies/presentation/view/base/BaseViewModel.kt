@@ -30,7 +30,7 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
                 else onResultError(ExceptionManager.manageError(BackendException()))
             }, {
                 Log.e("BaseViewModel", "Error", it)
-                onErrorReceived.value =(it?.customMessage)
+               onErrorReceived.value =(it?.customMessage)
                 onResultError(ExceptionManager.manageError(it ?: BackendException()))
             })
         }

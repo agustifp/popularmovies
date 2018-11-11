@@ -6,11 +6,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RetrofitAdapter() : KoinComponent {
+object RetrofitAdapter : KoinComponent {
 
-    fun createBackEndAdapter(): MoviesAPI = Retrofit.Builder()
+    fun createMoviesApiRetrofit(): MoviesAPI = Retrofit.Builder()
             .baseUrl(ApiConstants.BASE_URL)
-            .client(CustomOkHttpClient.createBackendOkHttpClient()!!)
+            .client(CustomOkHttpClient.createOkHttpClient()!!)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(MoviesAPI::class.java)

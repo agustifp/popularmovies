@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2018 FutureWorkshops. All rights reserved.
- */
 
 package android.afebrerp.com.movies.presentation.view
 

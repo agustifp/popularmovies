@@ -1,9 +1,14 @@
 package android.afebrerp.com.movies.domain.usecases.base
 
+import android.afebrerp.com.movies.data.entity.mapper.BackendResponseMapper
+import android.afebrerp.com.movies.domain.exception.BackendException
 import android.afebrerp.com.movies.domain.exception.BaseException
 import android.afebrerp.com.movies.domain.model.entity.base.BaseEntity
 import android.afebrerp.com.movies.domain.model.params.base.BaseParams
+import android.util.Log
 import kotlinx.coroutines.*
+import retrofit2.HttpException
+import java.lang.Exception
 
 
 abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
@@ -35,7 +40,18 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
 
     private fun createExceptionHandler(blockError: (BaseException?) -> Unit) =
             CoroutineExceptionHandler { _, e ->
-                blockError(e as BaseException)
+                try {
+                    if (e is BaseException) {
+                        blockError(e)
+                    } else if (e is HttpException) {
+                        blockError(BackendException(Throwable(), 0, BackendResponseMapper.parseHttpException(e)))
+                    }
+                } catch (exception: Exception) {
+                    Log.e("BaseUseCase", "Unknown error: ", e)
+                    blockError(BackendException(e, 0, "Unknown error"))
+                }
+
+
             }
 
     /**

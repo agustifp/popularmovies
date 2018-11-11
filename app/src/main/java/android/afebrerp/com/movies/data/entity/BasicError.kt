@@ -1,3 +1,3 @@
-package com.futureworkshops.codetest.android.data.model
+package android.afebrerp.com.movies.data.entity
 
-class BasicError(val error: String)
+class BasicError(val errors: List<String>)

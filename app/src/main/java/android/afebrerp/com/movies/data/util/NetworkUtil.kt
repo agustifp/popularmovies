@@ -3,17 +3,15 @@ package android.afebrerp.com.movies.data.util
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 
-object NetworkUtil {
-    fun isNetworkAvailable(context: Context): Boolean {
+object NetworkUtil :KoinComponent{
+    private val context:Context by inject()
+
+    fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        if (connectivityManager != null) {
-            val activeNetwork = connectivityManager.activeNetworkInfo
-            return activeNetwork != null && activeNetwork.isConnected
-        } else {
-            return false
-        }
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnected
     }
 }

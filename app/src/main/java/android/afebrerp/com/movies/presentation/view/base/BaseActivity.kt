@@ -1,9 +1,13 @@
 package android.afebrerp.com.movies.presentation.view.base
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.afebrerp.movies.android.R
+import com.afebrerp.movies.android.R.attr.colorAccent
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_base.*
 
 
@@ -50,5 +54,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun setToolbarTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    fun showSnackBar(message: String, view: View) {
+        val snackBar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        snackBar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+        snackBar.show()
     }
 }
