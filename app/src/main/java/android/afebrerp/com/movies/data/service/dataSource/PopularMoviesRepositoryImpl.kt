@@ -2,6 +2,7 @@ package android.afebrerp.com.movies.data.service.dataSource
 
 import android.afebrerp.com.movies.data.entity.mapper.MovieListMapper
 import android.afebrerp.com.movies.data.net.MoviesAPI
+import android.afebrerp.com.movies.domain.model.entity.MovieEntity
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 
 class PopularMoviesDataStoreImpl(private val moviesAPI: MoviesAPI) :
@@ -12,4 +13,7 @@ class PopularMoviesDataStoreImpl(private val moviesAPI: MoviesAPI) :
 
     override suspend fun getSearchMoviesList(searchText: String, page: Int): MovieListEntity =
         MovieListMapper.toDomainObject(moviesAPI.getSearchMovies(searchText, page).await())
+
+    override fun setMostPopularMoviesLocal(moviesList: List<MovieEntity>) =
+            realmHelper.setMostPopularList(moviesList)
 }
