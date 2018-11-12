@@ -6,7 +6,6 @@ import android.afebrerp.com.movies.presentation.extensions.observe
 import android.afebrerp.com.movies.presentation.view.base.BaseActivityFragmentInterface
 import android.afebrerp.com.movies.presentation.view.base.BaseFragment
 import android.afebrerp.com.movies.presentation.view.enumerations.EmptyViewEnumeration
-import android.afebrerp.com.movies.presentation.view.popularmovies.PopularMoviesView
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.SearchManager
@@ -29,18 +28,16 @@ import com.afebrerp.movies.android.R
 import kotlinx.android.synthetic.main.fragment_most_popular_movies.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
+class PopularMoviesFragment : BaseFragment() {
 
     private val viewModel: PopularMoviesViewModel by viewModel()
-
     private var baseActivityFragmentInterface: BaseActivityFragmentInterface? = null
-
+    private lateinit var movieListAdapter: PopularMovieListAdapter
     private var searchAction: MenuItem? = null
-    var isSearchExpanded: Boolean = false
-    private lateinit var breedListAdapter: PopularMovieListAdapter
+    private var isSearchExpanded: Boolean = false
+    private var loading: Boolean = false
+
     companion object {
-
-
         const val TAG = "PopularMoviesFragment"
 
         /**
@@ -52,6 +49,7 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
          */
         fun newInstance(): PopularMoviesFragment = PopularMoviesFragment()
     }
+
     override fun getFragmentLayout(): Int = R.layout.fragment_most_popular_movies
 
     private val linearLayoutManager: LinearLayoutManager = LinearLayoutManager(
@@ -59,8 +57,6 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
             RecyclerView.VERTICAL,
             false
     )
-
-    private var loading: Boolean = false
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -108,14 +104,17 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
 
     private fun setAdapter() {
         if (mostPopularMoviesRV.adapter == null) {
-            breedListAdapter = PopularMovieListAdapter(listOf())
-            mostPopularMoviesRV.adapter = breedListAdapter
+            movieListAdapter = PopularMovieListAdapter(listOf())
+            mostPopularMoviesRV.adapter = movieListAdapter
         }
     }
 
-    override fun loadItems(list: List<BaseListViewEntity>) {
-        breedListAdapter.movieList = list
-        breedListAdapter.notifyDataSetChanged()
+    private fun loadItems(list: List<BaseListViewEntity>) {
+        if (movieListAdapter.movieList.isEmpty()) {
+            movieListAdapter.movieList = list
+        }
+        movieListAdapter.notifyDataSetChanged()
+        showEmptyView(movieListAdapter.movieList.isEmpty())
     }
 
     override fun onAttach(context: Context?) {
@@ -169,8 +168,7 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
         mostPopularMoviesRV.stopScroll()
     }
 
-
-    override fun showProgressBar(show: Boolean) {
+    private fun showProgressBar(show: Boolean) {
         swipeRefreshLayout?.let {
             if (swipeRefreshLayout.isRefreshing) {
                 if (!show)
@@ -197,36 +195,28 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
                 getData()
             }
 
-    private fun getData() {
-        if (isInternetReachable())
-            viewModel.start()
-        else viewModel.getSavedMovies()
-    }
+    private fun getData() = viewModel.start()
+
 
     private fun isInternetReachable() =
             baseActivityFragmentInterface?.isInternetReachable() ?: false
 
-    override fun restartListAnimation() {
+    private fun restartListAnimation() {
         (mostPopularMoviesRV?.adapter as? PopularMovieListAdapter)?.restartLastPosition()
     }
 
     private fun attachScrollListener() =
             mostPopularMoviesRV?.addOnScrollListener(onScrollListener)
 
-    override fun showRecyclerView() {
+    private fun showRecyclerView() {
         mostPopularMoviesRV?.visibility = View.VISIBLE
     }
 
-    override fun hideRecyclerView() {
-        mostPopularMoviesRV?.visibility = View.GONE
-    }
-
-    override fun hideEmptyView() {
-        emptyView?.visibility = View.GONE
-    }
-
-    override fun showEmptyView() {
-        emptyView?.visibility = View.VISIBLE
+    fun showEmptyView(visibility: Boolean) {
+        emptyView?.visibility = when {
+            visibility -> View.VISIBLE
+            else -> View.GONE
+        }
     }
 
     override fun onDestroyView() {
@@ -234,7 +224,7 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
         unattachScrollListener()
     }
 
-    override fun setLoadingState(state: Boolean) {
+    private fun setLoadingState(state: Boolean) {
         loading = state
     }
 
@@ -366,7 +356,7 @@ class PopularMoviesFragment : BaseFragment(), PopularMoviesView {
     }
 
     fun searchClosed() {
-        //  presenter.isSearching = false
+        viewModel.isSearching = false
     }
 
 

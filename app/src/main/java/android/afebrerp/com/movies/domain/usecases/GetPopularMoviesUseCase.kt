@@ -6,7 +6,7 @@ import android.afebrerp.com.movies.domain.repository.PopularMoviesService
 import android.afebrerp.com.movies.domain.usecases.base.BaseUseCase
 
 
-class GetPopularMoviesUseCase (private val popularMoviesService: PopularMoviesService)
+class GetPopularMoviesUseCase(private val popularMoviesService: PopularMoviesService)
     : BaseUseCase<MovieListEntity, PopularMoviesParams>() {
 
     companion object {
@@ -15,9 +15,6 @@ class GetPopularMoviesUseCase (private val popularMoviesService: PopularMoviesSe
 
     override fun getTag(): String = TAG
 
-    override suspend fun buildRepoCall(params: PopularMoviesParams): MovieListEntity {
-     val test =   popularMoviesService.getPopularMovies(params.page)
-        return test
-    }
+    override suspend fun buildRepoCall(params: PopularMoviesParams): MovieListEntity = popularMoviesService.getPopularMovies(params.page)
 
 }

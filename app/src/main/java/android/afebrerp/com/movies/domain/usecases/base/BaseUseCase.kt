@@ -8,7 +8,8 @@ import android.afebrerp.com.movies.domain.model.params.base.BaseParams
 import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 
 abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
@@ -45,13 +46,13 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
                         blockError(e)
                     } else if (e is HttpException) {
                         blockError(BackendException(Throwable(), 0, BackendResponseMapper.parseHttpException(e)))
+                    } else if (e is UnknownHostException || e is SocketTimeoutException) {
+                        blockError(BackendException(Throwable(), 0, "No internet connection."))
                     }
                 } catch (exception: Exception) {
                     Log.e("BaseUseCase", "Unknown error: ", e)
                     blockError(BackendException(e, 0, "Unknown error"))
                 }
-
-
             }
 
     /**

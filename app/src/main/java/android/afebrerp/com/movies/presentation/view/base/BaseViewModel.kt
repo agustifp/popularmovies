@@ -1,5 +1,6 @@
 package android.afebrerp.com.movies.presentation.view.base
 
+
 import android.afebrerp.com.movies.data.exception.ExceptionManager
 import android.afebrerp.com.movies.domain.exception.BackendException
 import android.afebrerp.com.movies.domain.model.entity.base.BaseEntity
@@ -9,8 +10,6 @@ import android.afebrerp.com.movies.domain.usecases.wrappers.BaseUseCaseWrapper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
-
 import kotlin.reflect.KClass
 
 abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : ViewModel() {
@@ -24,15 +23,19 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
 
     fun <T : BaseUseCase<*, *>> execute(classType: KClass<T>, params: BaseParams, onResultOk: (BaseEntity) -> Unit, onResultError: (String) -> Unit) {
 
-        useCaseWrapper.getUseCase(classType)?.let { useCase ->
-            useCase.executeAsync(params, {
+        try {
+
+            useCaseWrapper.getUseCase(classType)!!.executeAsync(params, {
                 if (it.result) onResultOk(it)
                 else onResultError(ExceptionManager.manageError(BackendException()))
             }, {
                 Log.e("BaseViewModel", "Error", it)
-               onErrorReceived.value =(it?.customMessage)
+                onErrorReceived.value = (it?.customMessage)
                 onResultError(ExceptionManager.manageError(it ?: BackendException()))
             })
+
+        } catch (exception: KotlinNullPointerException) {
+            Log.e("BaseViewModel", "Error probably missing the useCase requested on your wrapper.", exception)
         }
     }
 

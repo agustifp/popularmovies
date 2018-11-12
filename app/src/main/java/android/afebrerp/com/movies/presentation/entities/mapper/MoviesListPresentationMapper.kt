@@ -5,7 +5,7 @@ import android.afebrerp.com.movies.presentation.entities.MovieViewEntity
 import android.afebrerp.com.movies.presentation.entities.base.BaseListViewEntity
 
 object MoviesListPresentationMapper {
-    fun toPresentationObject(movieListEntity: MovieListEntity) : List<BaseListViewEntity> =
+    fun toPresentationObject(movieListEntity: MovieListEntity): List<BaseListViewEntity> =
             movieListEntity.moviesList
-                    .map { MovieViewEntity(it.title, it.voteAverage, it.backdropPath) as BaseListViewEntity }
+                    .map { MovieViewEntity(it.id, it.title, it.voteAverage, it.backdropPath) as BaseListViewEntity }
 }

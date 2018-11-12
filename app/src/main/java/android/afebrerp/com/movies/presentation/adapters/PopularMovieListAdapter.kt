@@ -40,7 +40,7 @@ class PopularMovieListAdapter(var movieList: List<BaseListViewEntity>) : Recycle
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is MovieViewHolder && holder.view != null) {
+        if (holder is MovieViewHolder) {
             holder.bindView(movieList[position] as MovieViewEntity)
             setAnimation(holder.view, position)
         }

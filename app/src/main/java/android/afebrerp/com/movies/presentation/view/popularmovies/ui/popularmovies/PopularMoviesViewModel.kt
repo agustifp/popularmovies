@@ -1,5 +1,6 @@
 package android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies
 
+import android.afebrerp.com.movies.data.util.NetworkUtil
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 import android.afebrerp.com.movies.domain.model.params.EmptyParams
 import android.afebrerp.com.movies.domain.model.params.PopularMoviesParams
@@ -9,6 +10,7 @@ import android.afebrerp.com.movies.domain.usecases.GetSavedMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.GetSearchMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.wrappers.MainUseCaseWrapper
 import android.afebrerp.com.movies.presentation.entities.FooterViewViewEntity
+import android.afebrerp.com.movies.presentation.entities.MovieViewEntity
 import android.afebrerp.com.movies.presentation.entities.base.BaseListViewEntity
 import android.afebrerp.com.movies.presentation.entities.mapper.MoviesListPresentationMapper
 import android.afebrerp.com.movies.presentation.view.base.BaseViewModel
@@ -25,7 +27,6 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
     }
 
     private var loading: Boolean = false
-
     private var searchString = ""
     var isSearching = false
 
@@ -35,7 +36,11 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
         if (isSearching) {
             searchMovieByText(searchString, true)
         } else {
-            getMostPopularMovies(true)
+            if (NetworkUtil.isNetworkAvailable()) {
+                getMostPopularMovies(true)
+            } else {
+                getSavedMovies()
+            }
         }
     }
 
@@ -77,9 +82,12 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
 
     fun getSavedMovies() {
         execute(GetSavedMoviesUseCase::class, EmptyParams(), {
-            if (it.result)
+            if (it.result) {
                 manageMovieListEntityReceived(true, it as MovieListEntity)
+            }
+            loading = false
         }, {
+            loading = false
             //manage error on view if needed
         })
     }
@@ -89,7 +97,7 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
             popularMoviesList.value?.clear()
         }
         setIsLastPage(currentPage, moviesListEntity.totalPages)
-        addResultToMoviesList(MoviesListPresentationMapper.toPresentationObject(moviesListEntity))
+        addResultToMoviesList(MoviesListPresentationMapper.toPresentationObject(moviesListEntity) as ArrayList<BaseListViewEntity>)
         removeFooter()
         if (!isLastPage) {
             popularMoviesList.value?.add(FooterViewViewEntity())
@@ -97,8 +105,12 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
         popularMoviesList.postValue(popularMoviesList.value)
     }
 
-    private fun addResultToMoviesList(moviesListResult: List<BaseListViewEntity>) {
-        popularMoviesList.value?.addAll(moviesListResult)
+    private fun addResultToMoviesList(moviesListResult: ArrayList<BaseListViewEntity>) {
+        val oldList = arrayListOf<BaseListViewEntity>()
+        oldList.addAll(popularMoviesList.value!!)
+        oldList.addAll(moviesListResult)
+        popularMoviesList.value?.clear()
+        popularMoviesList.value?.addAll(oldList.distinctBy { (it as? MovieViewEntity)?.id })
     }
 
     var isLastPage: Boolean = false
@@ -126,9 +138,11 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
                         isSearching = false
                     }
                 }
+                loading = false
 
             }, {
                 //manage error on view if needed
+                loading = false
             })
         }
     }
