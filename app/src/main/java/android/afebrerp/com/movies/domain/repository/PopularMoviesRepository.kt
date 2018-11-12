@@ -1,4 +1,4 @@
-package android.afebrerp.com.movies.data.service.dataSource
+package android.afebrerp.com.movies.domain.repository
 
 import android.afebrerp.com.movies.domain.model.entity.MovieEntity
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity

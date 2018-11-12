@@ -132,7 +132,7 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
             execute(GetSearchMoviesUseCase::class, SearchMoviesParams(currentPage, searchString), {
 
                 if (lastSearch == (it as MovieListEntity).searchedString) {
-                    Log.e("ViewModel", "lastSearch == it.searchedString are equals, then show new response: ${it.result}")
+                    Log.d("ViewModel", "lastSearch == it.searchedString are equals, then show new response: ${it.result}")
                     if (it.result) {
                         manageMovieListEntityReceived(true, it)
                         isSearching = false

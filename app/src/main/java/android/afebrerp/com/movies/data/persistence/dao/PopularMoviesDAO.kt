@@ -10,17 +10,17 @@ import android.afebrerp.com.movies.domain.model.entity.MovieEntity
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 
 
-class PopularMoviesDAO(private val realmManager: RealmManager) {
+class PopularMoviesDAO {
 
     fun getMostPopularList(block: (List<MovieRealmEntity>) -> MovieListEntity?): MovieListEntity? =
-            realmManager.executeTransaction { realm ->
+            RealmManager.executeTransaction { realm ->
                 realm.getAllEntities(MovieRealmEntity::class.java) {
                     block(it)
                 }
             }
 
     fun setMostPopularList(moviesList: List<MovieEntity>) =
-            realmManager.executeTransaction { realm ->
+            RealmManager.executeTransaction { realm ->
                 realm.saveEntities(moviesList.asSequence()
                         .map {
                             MovieMapper.createMovieRealmEntityFromMovieEntity(it)

@@ -6,8 +6,8 @@ import android.afebrerp.com.movies.data.net.RetrofitAdapter
 import android.afebrerp.com.movies.data.persistence.dao.PopularMoviesDAO
 import android.afebrerp.com.movies.data.persistence.db.RealmManager
 import android.afebrerp.com.movies.data.service.PopularMoviesServiceImpl
-import android.afebrerp.com.movies.data.service.dataSource.PopularMoviesRepository
-import android.afebrerp.com.movies.data.service.dataSource.PopularMoviesRepositoryImpl
+import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
+import android.afebrerp.com.movies.data.service.repository.PopularMoviesRepositoryImpl
 import android.afebrerp.com.movies.domain.repository.PopularMoviesService
 import android.afebrerp.com.movies.domain.usecases.GetPopularMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.GetSavedMoviesUseCase
@@ -18,8 +18,7 @@ import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
 val daoModule = module {
-    single { RealmManager }
-    single { PopularMoviesDAO(realmManager = get()) }
+    single { PopularMoviesDAO() }
 }
 
 val netModule = module {

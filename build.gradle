@@ -31,6 +31,7 @@ task clean(type: Delete) {
 
 ext {
 
+    koinTest = '1.0.2'
     junitVersion = '4.12'
     gsonVersion = '2.8.0'
 
@@ -40,7 +41,8 @@ ext {
     okHttpVersion = '3.4.1'
 
     //Google libs
-    androidXVersion = '1.0.0'
+    androidXVersion = '1.0.2'
+    googleMaterial = '1.0.0'
     supportGoogleVersion = '28.0.0'
     supportGooglePlayServicesVersion = '16.0.3'
     lifecycle_version = '2.0.0'
@@ -65,7 +67,7 @@ ext {
     jetBrainsAnnotations = '15.0'
     espresso = '2.2.2'
     testRules = '0.5'
-    mockkVersion = '1.8.10.kotlin13'
+    mockkVersion = '1.8.12.kotlin13'
     coroutines = '1.0.0'
     espressoCore ='3.0.2'
     testRunner = '1.0.2'

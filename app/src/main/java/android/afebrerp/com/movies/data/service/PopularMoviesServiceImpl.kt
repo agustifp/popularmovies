@@ -1,6 +1,6 @@
 package android.afebrerp.com.movies.data.service
 
-import android.afebrerp.com.movies.data.service.dataSource.PopularMoviesRepository
+import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 import android.afebrerp.com.movies.domain.repository.PopularMoviesService
 import org.koin.standalone.KoinComponent
