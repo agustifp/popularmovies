@@ -25,4 +25,8 @@ class MovieViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 .centerCrop()
                 .into(view.movieImage)
     }
+
+    fun clearAnimation() {
+        view.clearAnimation()
+    }
 }

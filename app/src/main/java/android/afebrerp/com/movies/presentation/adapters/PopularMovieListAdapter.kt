@@ -32,6 +32,12 @@ class PopularMovieListAdapter(var movieList: List<BaseListViewEntity>) : Recycle
     override fun getItemCount(): Int =
             movieList.size
 
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        (holder as? MovieViewHolder)?.clearAnimation()
+    }
+
+
     override fun getItemViewType(position: Int): Int =
             when (movieList[position]) {
                 is MovieViewEntity -> MOVIE_TYPE
