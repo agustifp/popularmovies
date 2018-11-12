@@ -7,7 +7,7 @@ import android.afebrerp.com.movies.domain.usecases.base.BaseUseCase
 
 
 class GetSearchMoviesUseCase(private val popularMoviesService: PopularMoviesService) :
-    BaseUseCase<MovieListEntity, SearchMoviesParams>() {
+        BaseUseCase<MovieListEntity, SearchMoviesParams>() {
 
     companion object {
         const val TAG = "GetSearchMoviesUseCase"
@@ -16,5 +16,5 @@ class GetSearchMoviesUseCase(private val popularMoviesService: PopularMoviesServ
     override fun getTag(): String = TAG
 
     override suspend fun buildRepoCall(params: SearchMoviesParams): MovieListEntity =
-        popularMoviesService.getSearchMovies(params.searchText, params.page)
+            popularMoviesService.getSearchMovies(params.searchText, params.page)
 }

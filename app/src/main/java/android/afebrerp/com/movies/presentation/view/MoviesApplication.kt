@@ -1,4 +1,3 @@
-
 package android.afebrerp.com.movies.presentation.view
 
 import android.afebrerp.com.movies.presentation.koinInjector.generalModules

@@ -14,7 +14,6 @@ import org.junit.Test
 
 class MapperTest : BaseTest() {
 
-
     private fun getMockedJsonResponse(): JsonObject {
 
         val jsonResponse = JsonObject()
@@ -47,12 +46,12 @@ class MapperTest : BaseTest() {
 
     }
 
+    /**Simple test to show a good procedure of a Mapper using a mocked Json.*/
     @Test
     fun movieToDomainObject() {
+
         val responseObject = Gson().fromJson(getMockedJsonResponse(), MovieListDTO::class.java)
-
         val movieListEntity = MovieMapper.toDomainObject(responseObject)
-
         //check class
         assert(movieListEntity is MovieListEntity)
         assert(movieListEntity is BaseEntity)
@@ -67,20 +66,13 @@ class MapperTest : BaseTest() {
         assert(movieEntity.voteAverage == 6.6)
         assert(movieEntity.id == 335983)
         assert(!movieEntity.video)
-        assert(movieEntity.title ==  "Venom")
+        assert(movieEntity.title == "Venom")
+        assert(movieEntity.popularity == 240.47)
+        assert(movieEntity.posterPath == "\\/2uNW4WbgBXL25BAbXGLnLqX71Sw.jpg")
+        assert(movieEntity.genreIds[0] == 878)
+        assert(!movieEntity.adult)
+        assert(movieEntity.overview == "When Eddie Brock acquires the powers of a symbiote, he will have to release his alter-ego \"Venom\" to save his life.")
+        assert(movieEntity.releaseDate == "2018-10-03")
 
-
-//
-//        (val id: Int,
-//        val video: Boolean,
-//        val voteAverage: Double,
-//        val title: String,
-//        val popularity: Double,
-//        val posterPath: String,
-//        val genreIds: List<Int>,
-//        val backdropPath: String,
-//        val adult: Boolean,
-//        val overview: String,
-//        val releaseDate: String)
     }
 }

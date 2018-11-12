@@ -11,7 +11,7 @@
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        tools:src="@drawable/ic_empty_view_black"/>
+        tools:src="@drawable/ic_empty_view_black" />
 
     <TextView
         android:id="@+id/genericEmptyViewTitleTv"

@@ -6,7 +6,8 @@ import io.realm.annotations.PrimaryKey
 
 
 open class MovieRealmEntity : RealmObject() {
-    @PrimaryKey var id: Int? = null
+    @PrimaryKey
+    var id: Int? = null
     var video: Boolean? = null
     var voteAverage: Double? = null
     var title: String? = null

@@ -1,11 +1,11 @@
 package android.afebrerp.com.movies.data.entity.mapper
 
-import android.afebrerp.com.movies.domain.model.entity.MovieEntity
-import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 import android.afebrerp.com.movies.data.entity.MovieDTO
 import android.afebrerp.com.movies.data.entity.MovieListDTO
 import android.afebrerp.com.movies.data.entity.realmentity.GenreRealmEntity
 import android.afebrerp.com.movies.data.entity.realmentity.MovieRealmEntity
+import android.afebrerp.com.movies.domain.model.entity.MovieEntity
+import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 import io.realm.RealmList
 
 

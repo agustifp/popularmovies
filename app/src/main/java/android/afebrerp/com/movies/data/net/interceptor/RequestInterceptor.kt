@@ -16,8 +16,8 @@ class RequestInterceptor : Interceptor {
         val urlBuilder = url?.newBuilder()
         //put common queries
         urlBuilder?.addEncodedQueryParameter(
-            ApiConstants.QUERY_PARAM_API_KEY,
-            ApiKeyContainer.apiKey
+                ApiConstants.QUERY_PARAM_API_KEY,
+                ApiKeyContainer.apiKey
         ) //put your own api_key
 
         url = urlBuilder?.build()

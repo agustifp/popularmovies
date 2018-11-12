@@ -1,12 +1,9 @@
 package android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies
 
-import android.afebrerp.com.movies.data.util.NetworkUtil
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
-import android.afebrerp.com.movies.domain.model.params.EmptyParams
 import android.afebrerp.com.movies.domain.model.params.PopularMoviesParams
 import android.afebrerp.com.movies.domain.model.params.SearchMoviesParams
 import android.afebrerp.com.movies.domain.usecases.GetPopularMoviesUseCase
-import android.afebrerp.com.movies.domain.usecases.GetSavedMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.GetSearchMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.wrappers.MainUseCaseWrapper
 import android.afebrerp.com.movies.presentation.entities.FooterViewViewEntity
@@ -32,45 +29,39 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
 
     fun start() {
         currentPage = 1
-
-        if (isSearching) {
-            searchMovieByText(searchString, true)
-        } else {
-            if (NetworkUtil.isNetworkAvailable()) {
-                getMostPopularMovies(true)
-            } else {
-                getSavedMovies()
-            }
-        }
+        getMostPopularMovies()
+        refreshList()
     }
 
     fun loadMoreMovies() {
         if (isSearching) {
-            searchMovieByText()
+            keepSearchingSameText()
         } else {
             getMostPopularMovies()
         }
     }
 
-    fun searchMovieByText(newText: String? = "", refreshList: Boolean = false) {
+    fun searchMovieByText(newText: String) {
         isSearching = true
+        currentPage = 1
+        refreshList()
         if (newText != searchString) {
-            searchString = newText ?: ""
+            searchString = newText
         }
-        if (refreshList) {
-            currentPage = 1
-        }
-        getMostPopularMovies(searchString)
+        searchMostPopularMovies(searchString)
+    }
+
+    private fun keepSearchingSameText() {
+        searchMostPopularMovies(searchString)
     }
 
     @Synchronized
-    private fun getMostPopularMovies(refresh: Boolean = false) {
+    private fun getMostPopularMovies() {
         if (!loading) {
             loading = true
-            if (refresh) currentPage = 1
             execute(GetPopularMoviesUseCase::class, PopularMoviesParams(currentPage++), {
                 if (it.result) {
-                    manageMovieListEntityReceived(refresh, it as MovieListEntity)
+                    manageMovieListEntityReceived(it as MovieListEntity)
                 }
                 loading = false
             }, {
@@ -80,22 +71,11 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
         }
     }
 
-    fun getSavedMovies() {
-        execute(GetSavedMoviesUseCase::class, EmptyParams(), {
-            if (it.result) {
-                manageMovieListEntityReceived(true, it as MovieListEntity)
-            }
-            loading = false
-        }, {
-            loading = false
-            //manage error on view if needed
-        })
+    private fun refreshList() {
+        popularMoviesList?.value?.clear()
     }
 
-    private fun manageMovieListEntityReceived(refreshList: Boolean, moviesListEntity: MovieListEntity) {
-        if (refreshList) {
-            popularMoviesList.value?.clear()
-        }
+    private fun manageMovieListEntityReceived(moviesListEntity: MovieListEntity) {
         setIsLastPage(currentPage, moviesListEntity.totalPages)
         addResultToMoviesList(MoviesListPresentationMapper.toPresentationObject(moviesListEntity) as ArrayList<BaseListViewEntity>)
         removeFooter()
@@ -123,27 +103,23 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
         popularMoviesList.value?.removeAll { it is FooterViewViewEntity }
     }
 
-    private var lastSearch = ""
 
     @Synchronized
-    fun getMostPopularMovies(searchString: String) {
-        lastSearch = searchString
-        if (searchString != "") {
-            execute(GetSearchMoviesUseCase::class, SearchMoviesParams(currentPage, searchString), {
-
-                if (lastSearch == (it as MovieListEntity).searchedString) {
-                    Log.d("ViewModel", "lastSearch == it.searchedString are equals, then show new response: ${it.result}")
-                    if (it.result) {
-                        manageMovieListEntityReceived(true, it)
-                        isSearching = false
-                    }
+    fun searchMostPopularMovies(searchString: String) {
+        cancelJob(GetSearchMoviesUseCase::class)
+        execute(GetSearchMoviesUseCase::class, SearchMoviesParams(currentPage, searchString), {
+            if (searchString == (it as MovieListEntity).searchedString) {
+                Log.d("ViewModel", "lastSearch == it.searchedString are equals, then show new response: ${it.result}")
+                currentPage++
+                if (it.result && isSearching) {
+                    manageMovieListEntityReceived(it)
                 }
-                loading = false
+            }
+            loading = false
+        }, {
+            //manage error on view if needed
+            loading = false
+        })
 
-            }, {
-                //manage error on view if needed
-                loading = false
-            })
-        }
     }
 }

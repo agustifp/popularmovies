@@ -22,9 +22,7 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
     }
 
     fun <T : BaseUseCase<*, *>> execute(classType: KClass<T>, params: BaseParams, onResultOk: (BaseEntity) -> Unit, onResultError: (String) -> Unit) {
-
         try {
-
             useCaseWrapper.getUseCase(classType)!!.executeAsync(params, {
                 if (it.result) onResultOk(it)
                 else onResultError(ExceptionManager.manageError(BackendException()))
@@ -33,10 +31,23 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
                 onErrorReceived.value = (it?.customMessage)
                 onResultError(ExceptionManager.manageError(it ?: BackendException()))
             })
-
         } catch (exception: KotlinNullPointerException) {
             Log.e("BaseViewModel", "Error probably missing the useCase requested on your wrapper.", exception)
         }
     }
 
+    /**
+     * Implementation of cancel to show that has been evaluated, at this moment
+     * cancelling a Job, doesn't cancel the call from retrofit at the start of this project,
+     * it's being evaluated and will be added in a few weeks or a month.
+     * this can crash when returning data if the app is on background
+     * https://github.com/square/retrofit/pull/2886
+     * */
+    fun <T : BaseUseCase<*, *>> cancelJob(classType: KClass<T>) {
+        try {
+            useCaseWrapper.getUseCase(classType)!!.cancel()
+        } catch (exception: KotlinNullPointerException) {
+            Log.e("BaseViewModel", "Error probably missing the useCase requested on your wrapper.", exception)
+        }
+    }
 }

@@ -15,12 +15,15 @@ class EmptyView : FrameLayout {
     private var imageView: ImageView? = null
     private var titleTv: TextView? = null
     private var textTv: TextView? = null
+
     constructor(context: Context) : super(context) {
         init()
     }
+
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init()
     }
+
     private fun init() {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.generic_empty_view, this, true)
@@ -28,6 +31,7 @@ class EmptyView : FrameLayout {
         titleTv = view.genericEmptyViewTitleTv
         textTv = view.genericEmptyViewTextTv
     }
+
     fun fillViews(emptyViewEnumeration: EmptyViewEnumeration) {
         imageView!!.setImageDrawable(ContextCompat.getDrawable(context, emptyViewEnumeration.imageId))
         titleTv!!.text = context.getString(emptyViewEnumeration.title)

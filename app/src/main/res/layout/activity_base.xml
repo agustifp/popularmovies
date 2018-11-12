@@ -13,10 +13,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/white"/>
+            app:titleTextColor="@android:color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
 
     <FrameLayout

@@ -5,6 +5,7 @@ import android.afebrerp.com.movies.presentation.entities.base.BaseListViewEntity
 import android.afebrerp.com.movies.presentation.extensions.observe
 import android.afebrerp.com.movies.presentation.view.base.BaseActivityFragmentInterface
 import android.afebrerp.com.movies.presentation.view.base.BaseFragment
+import android.afebrerp.com.movies.presentation.view.customViews.WrapperLinearLayoutManager
 import android.afebrerp.com.movies.presentation.view.enumerations.EmptyViewEnumeration
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -44,37 +45,12 @@ class PopularMoviesFragment : BaseFragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param breed Parameter 1.
          * @return A new instance of fragment PopularMoviesFragment.
          */
         fun newInstance(): PopularMoviesFragment = PopularMoviesFragment()
     }
 
     override fun getFragmentLayout(): Int = R.layout.fragment_most_popular_movies
-
-    private val linearLayoutManager: LinearLayoutManager = LinearLayoutManager(
-            activity,
-            RecyclerView.VERTICAL,
-            false
-    )
-
-    private val onScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (dy > 0) {
-                val visibleItemCount = linearLayoutManager.childCount
-                val totalItemCount = linearLayoutManager.itemCount
-                val pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition()
-                if (!viewModel.isLastPage) {
-                    if (visibleItemCount + pastVisibleItems >= totalItemCount - 5) {
-                        viewModel.loadMoreMovies()
-                    }
-                }
-            } else if (linearLayoutManager.findLastVisibleItemPosition() == mostPopularMoviesRV.adapter?.itemCount!! - 1
-                    && !viewModel.isLastPage) {
-                viewModel.loadMoreMovies()
-            }
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,7 +60,6 @@ class PopularMoviesFragment : BaseFragment() {
         setEmptyView()
         setHasOptionsMenu(true)
         setObservers()
-
     }
 
     private fun setObservers() {
@@ -109,6 +84,29 @@ class PopularMoviesFragment : BaseFragment() {
         }
     }
 
+    private val linearLayoutManager: LinearLayoutManager = WrapperLinearLayoutManager(
+            activity,
+            RecyclerView.VERTICAL,
+            false)
+
+    private val onScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (dy > 0) {
+                val visibleItemCount = linearLayoutManager.childCount
+                val totalItemCount = linearLayoutManager.itemCount
+                val pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition()
+                if (!viewModel.isLastPage) {
+                    if (visibleItemCount + pastVisibleItems >= totalItemCount - 5) {
+                        viewModel.loadMoreMovies()
+                    }
+                }
+            } else if (linearLayoutManager.findLastVisibleItemPosition() == mostPopularMoviesRV.adapter?.itemCount!! - 1
+                    && !viewModel.isLastPage) {
+                viewModel.loadMoreMovies()
+            }
+        }
+    }
+
     private fun loadItems(list: List<BaseListViewEntity>) {
         if (movieListAdapter.movieList.isEmpty()) {
             movieListAdapter.movieList = list
@@ -130,10 +128,12 @@ class PopularMoviesFragment : BaseFragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 if (isSearchExpanded) {
                     stopScroll()
-                    searchMovie(newText)
+                    if(newText != "") {
+                        searchMovie(newText)
+                    }
                 }
                 return true
             }
@@ -147,6 +147,7 @@ class PopularMoviesFragment : BaseFragment() {
         searchAction?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
                 isSearchExpanded = true
+                mostPopularMoviesRV.recycledViewPool.clear()
                 animateSearchToolbar(1, true, true)
                 return true
             }
@@ -155,7 +156,9 @@ class PopularMoviesFragment : BaseFragment() {
                 isSearchExpanded = false
                 animateSearchToolbar(1, false, false)
                 stopScroll()
-                searchClosed()
+                linearLayoutManager.removeAllViews()
+                mostPopularMoviesRV.recycledViewPool.clear()
+                viewModel.isSearching = false
                 viewModel.start()
                 return true
             }
@@ -191,15 +194,11 @@ class PopularMoviesFragment : BaseFragment() {
                 loading = true
                 if (!viewModel.isSearching) {
                     restartListAnimation()
+                    viewModel.start()
+                }else{
+                    viewModel.loadMoreMovies()
                 }
-                getData()
             }
-
-    private fun getData() = viewModel.start()
-
-
-    private fun isInternetReachable() =
-            baseActivityFragmentInterface?.isInternetReachable() ?: false
 
     private fun restartListAnimation() {
         (mostPopularMoviesRV?.adapter as? PopularMovieListAdapter)?.restartLastPosition()
@@ -221,18 +220,14 @@ class PopularMoviesFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        unattachScrollListener()
+        unAttachScrollListener()
     }
 
-    private fun setLoadingState(state: Boolean) {
-        loading = state
-    }
-
-    private fun unattachScrollListener() =
+    private fun unAttachScrollListener() =
             mostPopularMoviesRV?.removeOnScrollListener(onScrollListener)
 
-    fun searchMovie(newText: String?) {
-        viewModel.searchMovieByText(newText, refreshList = true)
+    fun searchMovie(newText: String) {
+        viewModel.searchMovieByText(newText)
     }
 
     fun animateSearchToolbar(numberOfMenuIcon: Int, containsOverflow: Boolean, show: Boolean) {
@@ -354,10 +349,5 @@ class PopularMoviesFragment : BaseFragment() {
         a.recycle()
         return result
     }
-
-    fun searchClosed() {
-        viewModel.isSearching = false
-    }
-
 
 }

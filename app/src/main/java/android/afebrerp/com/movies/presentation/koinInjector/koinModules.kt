@@ -4,13 +4,11 @@ package android.afebrerp.com.movies.presentation.koinInjector
 import android.afebrerp.com.movies.data.net.MoviesAPI
 import android.afebrerp.com.movies.data.net.RetrofitAdapter
 import android.afebrerp.com.movies.data.persistence.dao.PopularMoviesDAO
-import android.afebrerp.com.movies.data.persistence.db.RealmManager
 import android.afebrerp.com.movies.data.service.PopularMoviesServiceImpl
-import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
 import android.afebrerp.com.movies.data.service.repository.PopularMoviesRepositoryImpl
+import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
 import android.afebrerp.com.movies.domain.repository.PopularMoviesService
 import android.afebrerp.com.movies.domain.usecases.GetPopularMoviesUseCase
-import android.afebrerp.com.movies.domain.usecases.GetSavedMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.GetSearchMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.wrappers.MainUseCaseWrapper
 import android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies.PopularMoviesViewModel
@@ -33,11 +31,10 @@ val repositoryModule = module {
 val useCaseModule = module {
     factory { GetPopularMoviesUseCase(popularMoviesService = get()) }
     factory { GetSearchMoviesUseCase(popularMoviesService = get()) }
-    factory { GetSavedMoviesUseCase(moviesService = get()) }
 }
 
 val useCaseWrapperModule = module {
-    factory { MainUseCaseWrapper(getPopularMoviesUseCase = get(), getSearchMoviesUseCase = get(), getSavedMoviesUseCase = get()) }
+    factory { MainUseCaseWrapper(getPopularMoviesUseCase = get(), getSearchMoviesUseCase = get()) }
 }
 
 val viewModelModules = module {

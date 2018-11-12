@@ -1,4 +1,4 @@
-package android.afebrerp.com.movies.presentation.view.splash
+package android.afebrerp.com.movies.presentation.view.movies
 
 
 import android.view.View
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class SplashActivityTest {
+class MoviesActivityTest {
 
     @Rule
     @JvmField
@@ -53,7 +53,7 @@ class SplashActivityTest {
                                                 1)),
                                 0),
                         isDisplayed()))
-        searchAutoComplete.perform(replaceText("pulp"), closeSoftKeyboard())
+        searchAutoComplete.perform(replaceText("iron"), closeSoftKeyboard())
 
         Thread.sleep(5000)
 

@@ -1,4 +1,4 @@
-package android.afebrerp.com.movies.presentation.view.splash
+package android.afebrerp.com.movies.presentation.view.movies
 
 import android.afebrerp.com.movies.presentation.navigation.Navigator
 import android.os.Bundle
@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
         executeMainWithDelay()
     }
 
-    fun executeMainWithDelay(){
+    fun executeMainWithDelay() {
         Handler().postDelayed({
             if (!hasBeenPaused) {
                 Navigator.openMainActivity(this)
@@ -29,12 +29,12 @@ class SplashActivity : AppCompatActivity() {
         hasBeenPaused = true
     }
 
-    override  fun onPause() {
+    override fun onPause() {
         super.onPause()
         hasBeenPaused = true
     }
 
-    override  fun onResume() {
+    override fun onResume() {
         super.onResume()
         if (hasBeenPaused) {
             hasBeenPaused = false

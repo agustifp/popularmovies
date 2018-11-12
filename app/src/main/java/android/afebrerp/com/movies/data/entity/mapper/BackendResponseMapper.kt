@@ -14,7 +14,12 @@ object BackendResponseMapper {
         try {
             val errorJsonString = httpException.response().errorBody()?.string()
             val basicError = Gson().fromJson(errorJsonString, BasicError::class.java)
-            errorMessage = basicError.errors[0]
+            if (basicError != null && !basicError.errors.isEmpty()) {
+                errorMessage = basicError.errors[0]
+            } else {
+                errorMessage = "UnHandled Error Message"
+            }
+
         } catch (e: Exception) {
             Log.e("BackendResponseMapper", e.toString())
         } finally {

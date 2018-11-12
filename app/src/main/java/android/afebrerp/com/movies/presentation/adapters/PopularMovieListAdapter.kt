@@ -28,7 +28,6 @@ class PopularMovieListAdapter(var movieList: List<BaseListViewEntity>) : Recycle
             else FooterViewHolder(parent.inflateFromLayout(R.layout.list_item_footer))
 
 
-
     override fun getItemCount(): Int =
             movieList.size
 
