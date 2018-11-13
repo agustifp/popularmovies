@@ -28,7 +28,8 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
                 else onResultError(ExceptionManager.manageError(BackendException()))
             }, {
                 Log.e("BaseViewModel", "Error", it)
-                onErrorReceived.value = (it?.customMessage)
+                val message = it?.customMessage?:"Unhandled error"
+                onErrorReceived.value = message
                 onResultError(ExceptionManager.manageError(it ?: BackendException()))
             })
         } catch (exception: KotlinNullPointerException) {

@@ -41,18 +41,21 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
 
     private fun createExceptionHandler(blockError: (BaseException?) -> Unit) =
             CoroutineExceptionHandler { _, e ->
-                try {
-                    if (e is BaseException) {
-                        blockError(e)
-                    } else if (e is HttpException) {
-                        blockError(BackendException(Throwable(), 0, BackendResponseMapper.parseHttpException(e)))
-                    } else if (e is UnknownHostException || e is SocketTimeoutException) {
-                        blockError(BackendException(Throwable(), 0, "No internet connection."))
+                launchUI({
+                    try {
+                        if (e is BaseException) {
+                            blockError(e)
+                        } else if (e is HttpException) {
+                            blockError(BackendException(Throwable(), 0, BackendResponseMapper.parseHttpException(e)))
+                        } else if (e is UnknownHostException || e is SocketTimeoutException) {
+                            blockError(BackendException(Throwable(), 0, "No internet connection."))
+                        }
+                    } catch (exception: Exception) {
+                        Log.e("BaseUseCase", "Unknown error: ", e)
+                        blockError(BackendException(e, 0, "Unknown error"))
                     }
-                } catch (exception: Exception) {
-                    Log.e("BaseUseCase", "Unknown error: ", e)
-                    blockError(BackendException(e, 0, "Unknown error"))
-                }
+                })
+
             }
 
     /**

@@ -1,6 +1,6 @@
 package android.afebrerp.com.movies.presentation.view.popularmovies
 
-import android.afebrerp.com.movies.data.reachability.NetworkUtil
+
 import android.afebrerp.com.movies.presentation.view.base.BaseActivity
 import android.afebrerp.com.movies.presentation.view.base.BaseActivityFragmentInterface
 import android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies.PopularMoviesFragment
