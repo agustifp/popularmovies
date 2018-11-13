@@ -5,6 +5,6 @@
     <string name="error_description_no_movies">Oh no! we cannot find any movie</string>
     <string name="search">Search</string>
     <string name="images_from_movies_content_description">Images from movies</string>
-    <string name="internet_connected">Internet connection stablished</string>
-    <string name="no_internet_connected">Ups! There\'s no internet! Using local data.</string>
+    <string name="internet_connected">We\'re back! Internet connection restored.</string>
+    <string name="no_internet_connected">Ups! No internet connection, using local data.</string>
 </resources>
