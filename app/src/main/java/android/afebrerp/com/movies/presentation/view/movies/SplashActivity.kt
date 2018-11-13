@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
         executeMainWithDelay()
     }
 
-    fun executeMainWithDelay() {
+    private fun executeMainWithDelay() {
         Handler().postDelayed({
             if (!hasBeenPaused) {
                 Navigator.openMainActivity(this)

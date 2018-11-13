@@ -211,7 +211,7 @@ class PopularMoviesFragment : BaseFragment() {
         mostPopularMoviesRV?.visibility = View.VISIBLE
     }
 
-    fun showEmptyView(visibility: Boolean) {
+    private fun showEmptyView(visibility: Boolean) {
         emptyView?.visibility = when {
             visibility -> View.VISIBLE
             else -> View.GONE

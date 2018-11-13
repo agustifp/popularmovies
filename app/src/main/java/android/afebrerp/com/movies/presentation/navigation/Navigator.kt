@@ -22,7 +22,7 @@ object Navigator {
     fun openMainActivity(context: Context) =
             openActivity(context, MostPopularMoviesActivity::class.java, true, ActivityTransitionEnum.FADE_IN)
 
-    fun setAnimation(activity: AppCompatActivity, animation: ActivityTransitionEnum) {
+    private fun setAnimation(activity: AppCompatActivity, animation: ActivityTransitionEnum) {
         if (animation != ActivityTransitionEnum.NONE)
             activity.overridePendingTransition(animation.pair.first, animation.pair.second)
     }
