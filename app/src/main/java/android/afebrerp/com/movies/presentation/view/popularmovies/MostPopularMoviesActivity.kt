@@ -23,10 +23,17 @@ class MostPopularMoviesActivity : BaseActivity(), BaseActivityFragmentInterface 
 
     override fun getToolbar(): Toolbar = findViewById(R.id.toolbar)
 
-    override fun isInternetReachable(): Boolean = NetworkUtil.isNetworkAvailable()
-
     override fun showMessage(message: String) {
         showSnackBar(message, coordinator_main)
     }
 
+    override fun onConnectivityChanges(isConnected: Boolean) {
+        super.onConnectivityChanges(isConnected)
+        val message :String = if(isConnected){
+            getString(R.string.internet_connected)
+        }else{
+            getString(R.string.no_internet_connected)
+        }
+        showMessage(message)
+    }
 }

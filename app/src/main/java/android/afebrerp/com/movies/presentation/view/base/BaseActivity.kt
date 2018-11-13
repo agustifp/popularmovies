@@ -1,7 +1,10 @@
 package android.afebrerp.com.movies.presentation.view.base
 
+import android.afebrerp.com.movies.data.util.ReachAbilityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -10,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_base.*
 
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), BaseActivityFragmentInterface {
     protected var currentTag: String? = null
     protected var currentFragment: Fragment? = null
 
@@ -26,10 +29,24 @@ abstract class BaseActivity : AppCompatActivity() {
         beginTransaction()
     }
 
+    override fun onResume() {
+        super.onResume()
+        ReachAbilityManager.setBackOfficeReachAbleListener {
+            onConnectivityChanges(it)
+        }
+    }
+
+    override fun isInternetReachable(): Boolean = ReachAbilityManager.isNetworkStateConnected
+
+    @CallSuper
+    open fun onConnectivityChanges(isConnected: Boolean) {
+        //set a general param.
+        Log.d("BaseActvity: ", "onConnectivityChanges reached with isConnected: $isConnected")
+    }
+
     private fun setToolbar() {
         setSupportActionBar(toolbar)
     }
-
 
     private fun initializeFragmentAndTAG(savedInstanceState: Bundle?) {
         if (savedInstanceState == null || !savedInstanceState.containsKey(CURRENT_FRAGMENT_TAG)) {
@@ -54,6 +71,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected fun setToolbarTitle(title: String) {
         supportActionBar?.title = title
     }
+
 
     fun showSnackBar(message: String, view: View) {
         val snackBar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
