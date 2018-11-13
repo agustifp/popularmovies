@@ -1,6 +1,6 @@
 package android.afebrerp.com.movies.data.service
 
-import android.afebrerp.com.movies.data.util.NetworkUtil
+import android.afebrerp.com.movies.data.reachability.ReachAbilityManager
 import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
 import android.afebrerp.com.movies.domain.repository.PopularMoviesService
@@ -10,7 +10,7 @@ class PopularMoviesServiceImpl(private val popularMoviesRepository: PopularMovie
         PopularMoviesService, KoinComponent {
 
     override suspend fun getPopularMovies(page: Int): MovieListEntity {
-        return if (NetworkUtil.isNetworkAvailable()) {
+        return if (ReachAbilityManager.isConnected) {
             val mostPopularMoviesList = popularMoviesRepository.getPopularMoviesList(page)
             popularMoviesRepository.setMostPopularMoviesLocal(mostPopularMoviesList.moviesList)
             mostPopularMoviesList

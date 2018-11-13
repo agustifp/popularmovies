@@ -1,6 +1,6 @@
 package android.afebrerp.com.movies.presentation.view.base
 
-import android.afebrerp.com.movies.data.util.ReachAbilityManager
+import android.afebrerp.com.movies.data.reachability.ReachAbilityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,6 +27,13 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityFragmentInterface
         setToolbar()
         initializeFragmentAndTAG(savedInstanceState)
         beginTransaction()
+        checkInternetState()
+    }
+
+    private fun checkInternetState() {
+        when {
+            !isInternetReachable() -> onConnectivityChanges(false)
+        }
     }
 
     override fun onResume() {
@@ -36,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityFragmentInterface
         }
     }
 
-    override fun isInternetReachable(): Boolean = ReachAbilityManager.isNetworkStateConnected
+    override fun isInternetReachable(): Boolean = ReachAbilityManager.isConnected
 
     @CallSuper
     open fun onConnectivityChanges(isConnected: Boolean) {
