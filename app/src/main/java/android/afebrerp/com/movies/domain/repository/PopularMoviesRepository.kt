@@ -6,7 +6,7 @@ import android.afebrerp.com.movies.domain.model.entity.MovieListEntity
 
 interface PopularMoviesRepository {
     //REALM
-    suspend fun getMostPopularMoviesLocal(): MovieListEntity
+    suspend fun getMostPopularMoviesLocal(): MovieListEntity?
 
     suspend fun setMostPopularMoviesLocal(moviesList: List<MovieEntity>)
     //API

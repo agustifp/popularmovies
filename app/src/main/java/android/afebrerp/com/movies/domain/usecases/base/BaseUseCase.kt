@@ -20,7 +20,7 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
         private const val TAG: String = "BaseUseCase"
     }
 
-    fun executeAsync(params: Params, block: (T) -> Unit,
+    fun executeAsync(params: Params, block: (T?) -> Unit,
                      blockError: (BaseException?) -> Unit) {
         job = launchUI({
             launchRepoCallAsync(params, block)
@@ -28,7 +28,7 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
 
     }
 
-    private suspend fun launchRepoCallAsync(params: Params, block: (T) -> Unit) {
+    private suspend fun launchRepoCallAsync(params: Params, block: (T?) -> Unit) {
         launchAsync {
             val result = buildRepoCall(params)
             withMainContext { block(result) }
@@ -37,7 +37,7 @@ abstract class BaseUseCase<T : BaseEntity, Params : BaseParams> {
 
     abstract fun getTag(): String
 
-    protected abstract suspend fun buildRepoCall(params: Params): T
+    protected abstract suspend fun buildRepoCall(params: Params): T?
 
     private fun createExceptionHandler(blockError: (BaseException?) -> Unit) =
             CoroutineExceptionHandler { _, e ->

@@ -15,6 +15,6 @@ class GetPopularMoviesUseCase(private val popularMoviesService: PopularMoviesSer
 
     override fun getTag(): String = TAG
 
-    override suspend fun buildRepoCall(params: PopularMoviesParams): MovieListEntity = popularMoviesService.getPopularMovies(params.page)
+    override suspend fun buildRepoCall(params: PopularMoviesParams): MovieListEntity? = popularMoviesService.getPopularMovies(params.page)
 
 }

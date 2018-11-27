@@ -12,9 +12,9 @@ import com.afebrerp.movies.android.R
 import kotlinx.android.synthetic.main.generic_empty_view.view.*
 
 class EmptyView : FrameLayout {
-    private var imageView: ImageView? = null
-    private var titleTv: TextView? = null
-    private var textTv: TextView? = null
+    private lateinit var imageView: ImageView
+    private lateinit var titleTv: TextView
+    private lateinit var textTv: TextView
 
     constructor(context: Context) : super(context) {
         init()
@@ -33,8 +33,8 @@ class EmptyView : FrameLayout {
     }
 
     fun fillViews(emptyViewEnumeration: EmptyViewEnumeration) {
-        imageView!!.setImageDrawable(ContextCompat.getDrawable(context, emptyViewEnumeration.imageId))
-        titleTv!!.text = context.getString(emptyViewEnumeration.title)
-        textTv!!.text = context.getString(emptyViewEnumeration.subtitle)
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, emptyViewEnumeration.imageId))
+        titleTv.text = context.getString(emptyViewEnumeration.title)
+        textTv.text = context.getString(emptyViewEnumeration.subtitle)
     }
 }

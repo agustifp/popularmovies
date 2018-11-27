@@ -19,12 +19,13 @@ class PopularMoviesDAO {
                 }
             }
 
-    fun setMostPopularList(moviesList: List<MovieEntity>) =
-            RealmManager.executeTransaction { realm ->
-                realm.saveEntities(moviesList.asSequence()
-                        .map {
-                            MovieMapper.createMovieRealmEntityFromMovieEntity(it)
-                        }.toList())
-            }!!
+    fun setMostPopularList(moviesList: List<MovieEntity>) {
+        RealmManager.executeTransaction { realm ->
+            realm.saveEntities(moviesList.asSequence()
+                    .map {
+                        MovieMapper.createMovieRealmEntityFromMovieEntity(it)
+                    }.toList())
+        }
+    }
 
 }

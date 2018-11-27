@@ -13,11 +13,12 @@ class PopularMoviesRepositoryImpl(private val moviesAPI: MoviesAPI, private val 
     override suspend fun setMostPopularMoviesLocal(moviesList: List<MovieEntity>) =
             popularMoviesDAO.setMostPopularList(moviesList)
 
+
     //In this case, toDomainObject returns a non nullable vale.
-    override suspend fun getMostPopularMoviesLocal(): MovieListEntity =
+    override suspend fun getMostPopularMoviesLocal(): MovieListEntity? =
             popularMoviesDAO.getMostPopularList {
                 MovieMapper.toDomainObject(it)
-            }!!
+            }
 
     override suspend fun getPopularMoviesList(page: Int): MovieListEntity =
             MovieMapper.toDomainObject(moviesAPI.getPopularMoviesList(page).await())

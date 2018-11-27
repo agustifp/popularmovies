@@ -9,7 +9,7 @@ import org.koin.standalone.KoinComponent
 class PopularMoviesServiceImpl(private val popularMoviesRepository: PopularMoviesRepository) :
         PopularMoviesService, KoinComponent {
 
-    override suspend fun getPopularMovies(page: Int): MovieListEntity {
+    override suspend fun getPopularMovies(page: Int): MovieListEntity? {
         return if (ReachAbilityManager.isConnected) {
             val mostPopularMoviesList = popularMoviesRepository.getPopularMoviesList(page)
             popularMoviesRepository.setMostPopularMoviesLocal(mostPopularMoviesList.moviesList)

@@ -91,6 +91,12 @@ class PopularMoviesFragment : BaseFragment() {
 
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+            var loadFromBottom = false
+            mostPopularMoviesRV.adapter?.itemCount?.let { itemCount ->
+                loadFromBottom = !viewModel.isLastPage && linearLayoutManager.findLastVisibleItemPosition() == (itemCount - 1)
+            }
+
             if (dy > 0) {
                 val visibleItemCount = linearLayoutManager.childCount
                 val totalItemCount = linearLayoutManager.itemCount
@@ -100,8 +106,7 @@ class PopularMoviesFragment : BaseFragment() {
                         viewModel.loadMoreMovies()
                     }
                 }
-            } else if (linearLayoutManager.findLastVisibleItemPosition() == mostPopularMoviesRV.adapter?.itemCount!! - 1
-                    && !viewModel.isLastPage) {
+            } else if (loadFromBottom) {
                 viewModel.loadMoreMovies()
             }
         }
@@ -131,7 +136,7 @@ class PopularMoviesFragment : BaseFragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 if (isSearchExpanded) {
                     stopScroll()
-                    if(newText != "") {
+                    if (newText != "") {
                         searchMovie(newText)
                     }
                 }
@@ -195,7 +200,7 @@ class PopularMoviesFragment : BaseFragment() {
                 if (!viewModel.isSearching) {
                     restartListAnimation()
                     viewModel.start()
-                }else{
+                } else {
                     viewModel.loadMoreMovies()
                 }
             }
@@ -231,33 +236,34 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     fun animateSearchToolbar(numberOfMenuIcon: Int, containsOverflow: Boolean, show: Boolean) {
+        baseActivityFragmentInterface?.getToolbar()?.let { toolbar ->
+            context?.let { context ->
+                toolbar.setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
 
-        val toolbar = baseActivityFragmentInterface?.getToolbar()
-        toolbar?.let {
-            toolbar.setBackgroundColor(ContextCompat.getColor(context!!, android.R.color.white))
-
-            if (show) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val createCircularReveal = createRevealAnimationReveal(toolbar, containsOverflow, numberOfMenuIcon)
-                    createCircularReveal.duration = 250
-                    createCircularReveal.start()
+                if (show) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        val createCircularReveal = createRevealAnimationReveal(toolbar, containsOverflow, numberOfMenuIcon)
+                        createCircularReveal.duration = 250
+                        createCircularReveal.start()
+                    } else {
+                        searchRevealAnimationPreLollipop(toolbar)
+                    }
                 } else {
-                    searchRevealAnimationPreLollipop(toolbar)
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val createCircularReveal = createCircularAnimationClose(toolbar, containsOverflow, numberOfMenuIcon)
-                    createCircularReveal.addListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            super.onAnimationEnd(animation)
-                            toolbar.setBackgroundColor(getThemeColor(context!!, R.attr.colorPrimary))
-                        }
-                    })
-                    createCircularReveal.start()
-                } else {
-                    searchCloseAnimationPreLollipop(toolbar)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        val createCircularReveal = createCircularAnimationClose(toolbar, containsOverflow, numberOfMenuIcon)
+                        createCircularReveal.addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                super.onAnimationEnd(animation)
+                                toolbar.setBackgroundColor(getThemeColor(context, R.attr.colorPrimary))
+                            }
+                        })
+                        createCircularReveal.start()
+                    } else {
+                        searchCloseAnimationPreLollipop(toolbar)
+                    }
                 }
             }
+
         }
     }
 
@@ -309,8 +315,9 @@ class PopularMoviesFragment : BaseFragment() {
         animationSet.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
 
-            override fun onAnimationEnd(animation: Animation) =
-                    toolbar.setBackgroundColor(getThemeColor(context!!, R.attr.colorPrimary))
+            override fun onAnimationEnd(animation: Animation) {
+                context?.let { context -> toolbar.setBackgroundColor(getThemeColor(context, R.attr.colorPrimary)) }
+            }
 
             override fun onAnimationRepeat(animation: Animation) {}
         })

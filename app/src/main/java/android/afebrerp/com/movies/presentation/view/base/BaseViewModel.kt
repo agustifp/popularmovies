@@ -23,18 +23,24 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
 
     fun <T : BaseUseCase<*, *>> execute(classType: KClass<T>, params: BaseParams, onResultOk: (BaseEntity) -> Unit, onResultError: (String) -> Unit) {
         try {
-            useCaseWrapper.getUseCase(classType)!!.executeAsync(params, {
-                if (it.result) onResultOk(it)
-                else onResultError(ExceptionManager.manageError(BackendException()))
-            }, {
-                Log.e("BaseViewModel", "Error", it)
-                val message = it?.customMessage?:"Unhandled error"
-                onErrorReceived.value = message
-                onResultError(ExceptionManager.manageError(it ?: BackendException()))
-            })
+            useCaseWrapper.getUseCase(classType)?.let { baseUseCase ->
+                baseUseCase.executeAsync(params, { baseEntity ->
+                    baseEntity?.let {
+                        if (it.result) onResultOk(it)
+                        else onResultError(ExceptionManager.manageError(BackendException()))
+                    }
+
+                }, { baseException ->
+                    Log.e("BaseViewModel", "Error", baseException)
+                    val message = baseException?.customMessage ?: "Unhandled error"
+                    onErrorReceived.value = message
+                    onResultError(ExceptionManager.manageError(baseException ?: BackendException()))
+                })
+            }
         } catch (exception: KotlinNullPointerException) {
             Log.e("BaseViewModel", "Error probably missing the useCase requested on your wrapper.", exception)
         }
+
     }
 
     /**
@@ -46,7 +52,7 @@ abstract class BaseViewModel(private val useCaseWrapper: BaseUseCaseWrapper) : V
      * */
     fun <T : BaseUseCase<*, *>> cancelJob(classType: KClass<T>) {
         try {
-            useCaseWrapper.getUseCase(classType)!!.cancel()
+            useCaseWrapper.getUseCase(classType)?.cancel()
         } catch (exception: KotlinNullPointerException) {
             Log.e("BaseViewModel", "Error probably missing the useCase requested on your wrapper.", exception)
         }

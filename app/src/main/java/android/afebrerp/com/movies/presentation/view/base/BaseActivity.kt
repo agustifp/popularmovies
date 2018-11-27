@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.activity_base.*
 
 
 abstract class BaseActivity : AppCompatActivity(), BaseActivityFragmentInterface {
-    protected var currentTag: String? = null
-    protected var currentFragment: Fragment? = null
+    protected lateinit var currentTag: String
+    protected lateinit var currentFragment: Fragment
 
     companion object {
         private const val CURRENT_FRAGMENT_TAG: String = "currentTag"
@@ -59,19 +59,24 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityFragmentInterface
         if (savedInstanceState == null || !savedInstanceState.containsKey(CURRENT_FRAGMENT_TAG)) {
             createFragmentAndSettingTAG()
         } else {
-            currentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG)
-            currentFragment = supportFragmentManager.getFragment(savedInstanceState, currentTag!!)
+            savedInstanceState.getString(CURRENT_FRAGMENT_TAG)?.let { currentTag ->
+                supportFragmentManager.getFragment(savedInstanceState, currentTag)?.let { it ->
+                    currentFragment = it
+                }
+            }
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        supportFragmentManager.putFragment(outState!!, currentTag!!, currentFragment!!)
+        outState?.let { bundle ->
+            supportFragmentManager.putFragment(bundle, currentTag, currentFragment)
+        }
         outState?.putString(CURRENT_FRAGMENT_TAG, currentTag)
         super.onSaveInstanceState(outState)
     }
 
     private fun beginTransaction() =
-            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, currentFragment!!, currentTag).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, currentFragment, currentTag).commit()
 
     abstract fun createFragmentAndSettingTAG()
 

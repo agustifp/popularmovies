@@ -87,7 +87,9 @@ class PopularMoviesViewModel(mainUseCaseWrapper: MainUseCaseWrapper) : BaseViewM
 
     private fun addResultToMoviesList(moviesListResult: ArrayList<BaseListViewEntity>) {
         val oldList = arrayListOf<BaseListViewEntity>()
-        oldList.addAll(popularMoviesList.value!!)
+        popularMoviesList.value?.let {
+            oldList.addAll(it)
+        }
         oldList.addAll(moviesListResult)
         popularMoviesList.value?.clear()
         popularMoviesList.value?.addAll(oldList.distinctBy { (it as? MovieViewEntity)?.id })
