@@ -4,10 +4,8 @@ package android.afebrerp.com.movies.presentation.koinInjector
 import android.afebrerp.com.movies.data.net.MoviesAPI
 import android.afebrerp.com.movies.data.net.RetrofitAdapter
 import android.afebrerp.com.movies.data.persistence.dao.PopularMoviesDAO
-import android.afebrerp.com.movies.data.service.PopularMoviesServiceImpl
-import android.afebrerp.com.movies.data.service.repository.PopularMoviesRepositoryImpl
+import android.afebrerp.com.movies.data.repository.PopularMoviesRepositoryImpl
 import android.afebrerp.com.movies.domain.repository.PopularMoviesRepository
-import android.afebrerp.com.movies.domain.repository.PopularMoviesService
 import android.afebrerp.com.movies.domain.usecases.GetPopularMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.GetSearchMoviesUseCase
 import android.afebrerp.com.movies.domain.usecases.wrappers.MainUseCaseWrapper
@@ -25,7 +23,6 @@ val netModule = module {
 
 val repositoryModule = module {
     single<PopularMoviesRepository> { PopularMoviesRepositoryImpl(moviesAPI = get(), popularMoviesDAO = get()) }
-    single<PopularMoviesService> { PopularMoviesServiceImpl(popularMoviesRepository = get()) }
 }
 
 val useCaseModule = module {
