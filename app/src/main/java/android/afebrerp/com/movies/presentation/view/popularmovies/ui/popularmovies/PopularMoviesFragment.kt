@@ -1,8 +1,10 @@
 package android.afebrerp.com.movies.presentation.view.popularmovies.ui.popularmovies
 
 import android.afebrerp.com.movies.presentation.adapters.PopularMovieListAdapter
+import android.afebrerp.com.movies.presentation.entities.MovieViewEntity
 import android.afebrerp.com.movies.presentation.entities.base.BaseListViewEntity
 import android.afebrerp.com.movies.presentation.extensions.observe
+import android.afebrerp.com.movies.presentation.glideModule.GlideApp
 import android.afebrerp.com.movies.presentation.view.base.BaseActivityFragmentInterface
 import android.afebrerp.com.movies.presentation.view.base.BaseFragment
 import android.afebrerp.com.movies.presentation.view.customViews.WrapperLinearLayoutManager
@@ -14,7 +16,12 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -26,8 +33,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afebrerp.movies.android.R
-import kotlinx.android.synthetic.main.fragment_most_popular_movies.*
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.util.FixedPreloadSizeProvider
+import kotlinx.android.synthetic.main.fragment_most_popular_movies.emptyView
+import kotlinx.android.synthetic.main.fragment_most_popular_movies.mostPopularMoviesRV
+import kotlinx.android.synthetic.main.fragment_most_popular_movies.progressBar
+import kotlinx.android.synthetic.main.fragment_most_popular_movies.swipeRefreshLayout
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.util.Collections
 
 class PopularMoviesFragment : BaseFragment() {
 
@@ -79,9 +94,35 @@ class PopularMoviesFragment : BaseFragment() {
 
     private fun setAdapter() {
         if (mostPopularMoviesRV.adapter == null) {
+
             movieListAdapter = PopularMovieListAdapter(listOf())
             mostPopularMoviesRV.adapter = movieListAdapter
+
+            val preLoader = RecyclerViewPreloader(
+                    GlideApp.with(this),
+                    MyPreloadModelProvider(),
+                    FixedPreloadSizeProvider<String>(1024, 768),
+                    10)
+            mostPopularMoviesRV.addOnScrollListener(preLoader)
         }
+    }
+
+    inner class MyPreloadModelProvider : ListPreloader.PreloadModelProvider<String> {
+
+        override fun getPreloadItems(position: Int): MutableList<String> {
+            var uri = ""
+            when (val item = movieListAdapter.movieList[position]) {
+                is MovieViewEntity -> uri = (item).imageUri
+            }
+            return if (TextUtils.isEmpty(uri)) {
+                Collections.emptyList()
+            } else {
+                Collections.singletonList(uri)
+            }
+        }
+
+        override fun getPreloadRequestBuilder(url: String): RequestBuilder<*>? =
+                GlideApp.with(activity!!.applicationContext).load(url)
     }
 
     private val linearLayoutManager: LinearLayoutManager = WrapperLinearLayoutManager(
@@ -113,6 +154,9 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun loadItems(list: List<BaseListViewEntity>) {
+
+//        urlArrayList.addAll(populateUrls(list))
+
         if (movieListAdapter.movieList.isEmpty()) {
             movieListAdapter.movieList = list
         }
